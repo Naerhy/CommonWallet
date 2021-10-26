@@ -71,8 +71,8 @@ contract MeowFunds is Ownable { // changer nom contrat
 		// emit ApproveRequest(id, _msgSender);
 	}
 
-	function hasAlreadyApproved(uint16 id, address userAddress) private returns (bool) {
-		for (int i = 0; i < allRequests[id].approvals.length; i++) {
+	function hasAlreadyApproved(uint16 id, address userAddress) private view returns (bool) {
+		for (uint256 i = 0; i < allRequests[id].approvals.length; i++) {
 			if (allRequests[id].approvals[i] == userAddress)
 				return true;
 		}
