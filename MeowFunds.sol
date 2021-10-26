@@ -35,7 +35,7 @@ contract MeowFunds is Ownable { // changer nom contrat
 	*/
 
 	modifier onlyWhitelisted() {
-		require(getWhitelistStatus(_msgSender) == true, "Address isn't whitelisted");
+		require(getWhitelistStatus(_msgSender()) == true, "Address isn't whitelisted");
 		_;
 	}
 
@@ -57,17 +57,17 @@ contract MeowFunds is Ownable { // changer nom contrat
 		// emit DepositFunds(_msgSender, msg.value);
 	}
 
-	function requestWithdrawal(uint256 requestedAmount, string message) public onlyWhitelisted {
-		S_Requests memory newRequest = S_Requests(allRequests.length, _msgSender, requestedAmount, message, new address[](0), false);
+	function requestWithdrawal(uint256 requestedAmount, string memory message) public onlyWhitelisted {
+		S_Requests memory newRequest = S_Requests(uint16(allRequests.length), _msgSender(), requestedAmount, message, new address[](0), false);
 		allRequests.push(newRequest);
 		// emit RequestWithdrawal(allRequests.length, _msgSender, requestedAmount, message);
 	}
 
 	function approveRequest(uint16 id) public onlyWhitelisted {
 		require(id < allRequests.length, "Invalid ID"); // et id >= 0 ??
-		require(_msgSender != allRequests[id].applicant, "Applicant can't approve his own request");
-		require(hasAlreadyApproved(id, _msgSender) == false, "This address has already approved");
-		allRequests[id].approved.push(_msgSender);
+		require(_msgSender() != allRequests[id].applicant, "Applicant can't approve his own request");
+		require(hasAlreadyApproved(id, _msgSender()) == false, "This address has already approved");
+		allRequests[id].approved.push(_msgSender());
 		// emit ApproveRequest(id, _msgSender);
 	}
 
@@ -81,7 +81,7 @@ contract MeowFunds is Ownable { // changer nom contrat
 
 	function withdrawFunds(uint16 id) public onlyWhitelisted {
 		require(id < allRequests.length, "Invalid ID"); // et id >= 0 ??
-		require(allRequests[id].applicant == _msgSender, "Invalid address");
+		require(allRequests[id].applicant == _msgSender(), "Invalid address");
 		require(allRequests[id].approved.length > nbWhitelisted / 2, "Not enough approvals");
 		require(getContractBalance() >= allRequests[id].requestedAmount, "Contract balance is too low");
 		payable(_msgSender()).transfer(allRequests[id].requestedAmount);
