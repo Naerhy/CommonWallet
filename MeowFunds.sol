@@ -58,7 +58,7 @@ contract MeowFunds is Ownable {
 		return address(this).balance;
 	}
 
-	function getRequestInformation(uint16 id) public view onlyWhitelisted onlyValidId(id) returns (uint16, address, uint256, string memory , address[] memory, bool) {
+	function getRequestInformation(uint16 id) public view onlyWhitelisted onlyValidId(id) returns (uint16, address, uint256, string memory, address[] memory, bool) {
 		return (allRequests[id].id, allRequests[id].applicant, allRequests[id].requestedAmount, allRequests[id].message, allRequests[id].approvals, allRequests[id].approved);
 	}
 
