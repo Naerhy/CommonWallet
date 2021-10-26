@@ -67,13 +67,13 @@ contract MeowFunds is Ownable { // changer nom contrat
 		require(id < allRequests.length, "Invalid ID"); // et id >= 0 ??
 		require(_msgSender() != allRequests[id].applicant, "Applicant can't approve his own request");
 		require(hasAlreadyApproved(id, _msgSender()) == false, "This address has already approved");
-		allRequests[id].approved.push(_msgSender());
+		allRequests[id].approvals.push(_msgSender());
 		// emit ApproveRequest(id, _msgSender);
 	}
 
 	function hasAlreadyApproved(uint16 id, address userAddress) private returns (bool) {
-		for (int i = 0; i < allRequests[id].approved.length; i++) {
-			if (allRequests[id].approved[i] == userAddress)
+		for (int i = 0; i < allRequests[id].approvals.length; i++) {
+			if (allRequests[id].approvals[i] == userAddress)
 				return true;
 		}
 		return false;
@@ -82,7 +82,7 @@ contract MeowFunds is Ownable { // changer nom contrat
 	function withdrawFunds(uint16 id) public onlyWhitelisted {
 		require(id < allRequests.length, "Invalid ID"); // et id >= 0 ??
 		require(allRequests[id].applicant == _msgSender(), "Invalid address");
-		require(allRequests[id].approved.length > nbWhitelisted / 2, "Not enough approvals");
+		require(allRequests[id].approvals.length > nbWhitelisted / 2, "Not enough approvals");
 		require(getContractBalance() >= allRequests[id].requestedAmount, "Contract balance is too low");
 		payable(_msgSender()).transfer(allRequests[id].requestedAmount);
 		allRequests[id].approved = true;
